@@ -91,21 +91,6 @@ const ShowProducts = () => {
             // }
         
     
-            const deleteProduct = (ID,NOMBRE)=>{
-                const MySwal = withReactContent(Swal)
-                MySwal.fire({
-                    title: '¿Seguro que quieres elimar el producto '+NOMBRE+'?',
-                    icon: 'question', text:'No se podra dar marcha atras',
-                    showCancelButton:true, confirmButtonText:'Si, eliminar', cancelButtonText:'cancelar'
-                }).then((result) =>{
-                    if(result.isConfirmed){
-                        setID(ID);
-                        sendReq('DELETE', {ID:ID})
-                    }else{
-                        show_alerta('El producto NO fue eliminado', 'info')}
-                })
-            }
-    
     
     }
 

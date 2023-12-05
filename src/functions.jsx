@@ -23,7 +23,7 @@ function onFocus(foco){
 
 export const sendReq = async (method, params) => {
 
-    const url="http://localhost:3000/"
+    const url="http://localhost:3000/componentes"
 
     await axios({ method: method, url: url, data:params}).then(function(resp){
         let type = resp.data[0]
