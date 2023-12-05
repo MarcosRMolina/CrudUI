@@ -28,12 +28,13 @@ const ShowProducts = () => {
         setProducts(res.data)
     }
 
-    const openModal = (op, ID, NOMBRE, DESCRIPCION_CORTA, PRECIO, CATEGORIA, IMG, STOCK) =>{
+    const openModal = (op, ID, NOMBRE, DESCRIPCION_CORTA, PRECIO, STOCK) =>{
         setID("")
         setNOMBRE("")
         setDESCRIPCION_CORTA("")
         setPRECIO("")
         setSTOCK("")
+        setCATEGORIA("")
         setOperation(op);
         if(op === 1){
             setTitle("Registrar Producto");
@@ -43,6 +44,7 @@ const ShowProducts = () => {
             setNOMBRE(NOMBRE)
             setDESCRIPCION_CORTA(DESCRIPCION_CORTA)
             setPRECIO(PRECIO)
+            setCATEGORIA(CATEGORIA)
             setSTOCK(STOCK)
         }
         window.setTimeout(function(){
@@ -51,48 +53,59 @@ const ShowProducts = () => {
     }
 
     const validate = () => {
-        let params;
-        let method;
-        if(NOMBRE.trim() === ""){
-            show_alerta("Escribe el nombre del componente", "warning")
-        }else if(DESCRIPCION_CORTA.trim() === ""){
-            show_alerta("Escribe una descripción del componente", "warning")
-        }else if(PRECIO === ""){
-            show_alerta("Escribe el precio del componente", "warning")
-        }else if(CATEGORIA.trim() === ""){
-            show_alerta("Escribe el nombre del componente", "warning")
-        }else if(STOCK === ""){
-            show_alerta("Escribe la disponibilidad", "warning")
-        }else{
-            if(operation===1){
-                params={name:NOMBRE.trim(),description: DESCRIPCION_CORTA.trim(), price: PRECIO, category: CATEGORIA.trim(), stock: STOCK };
-                method = "POST"
-            }else{
-                params={name:NOMBRE.trim(),description: DESCRIPCION_CORTA.trim(), price: PRECIO, category: CATEGORIA.trim(), stock: STOCK };
-                method= "PATCH";
-            }
+      let params;
+      let method;
+      if (NOMBRE.trim() === "") {
+        show_alerta("Escribe el nombre del componente", "warning");
+      } else if (DESCRIPCION_CORTA.trim() === "") {
+        show_alerta("Escribe una descripción del componente", "warning");
+      } else if (PRECIO === "") {
+        show_alerta("Escribe el precio del componente", "warning");
+      } else if (CATEGORIA.trim() === "") {
+        show_alerta("Escribe el nombre del componente", "warning");
+      } else if (STOCK === "") {
+        show_alerta("Escribe la disponibilidad", "warning");
+      } else {
+        if (operation === 1) {
+          params = {
+            NOMBRE: NOMBRE.trim(),
+            DESCRIPCION_CORTA: DESCRIPCION_CORTA.trim(),
+            PRECIO: PRECIO,
+            CATEGORIA: CATEGORIA.trim(),
+            STOCK: STOCK,
+          };
+          method = "POST";
+        } else {
+          params = {
+            NOMBRE: NOMBRE.trim(),
+            DESCRIPCION_CORTA: DESCRIPCION_CORTA.trim(),
+            PRECIO: PRECIO,
+            CATEGORIA: CATEGORIA.trim(),
+            STOCK: STOCK,
+          };
+          method = "PATCH";
+        }
+      }
 
-            sendReq(method,params);}
-            // const sendReq = async (method, params) => {
-            //     await axios({ method: method, url: url, data:params}).then(function(resp){
-            //         let type = resp.data[0]
-            //         let msg = resp.data[1]
-            //         show_alerta(msg,type);
-            //         if(type==="success"){
-            //             document.getElementById("btnCerrar").click()
-            //             getProducts()
-            //         }
-            //     })
+      sendReq(method, params);
+    };
+    const sendReq = async (method, params) => {
+      await axios({ method: method, url: url, data: params })
+        .then(function (resp) {
+          let type = resp.data[0];
+          let msg = resp.data[1];
+          show_alerta(msg, type);
+          if (type === "success") {
+            document.getElementById("btnCerrar").click();
+            getProducts();
+          }
+        })
 
-            //     .catch(function(error){
-            //         show_alerta("Error en la solicitud", "error")
-            //         console.log(error)
-            //     })
-            // }
-        
-    
-    
-    }
+        .catch(function (error) {
+          show_alerta("Error en la solicitud", "error");
+          console.log(error);
+        });
+    };
 
     const deleteProduct = (ID,NOMBRE)=>{
         const MySwal = withReactContent(Swal)
