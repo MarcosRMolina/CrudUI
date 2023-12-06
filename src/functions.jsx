@@ -21,26 +21,27 @@ function onFocus(foco){
 
 
 
-export const sendReq = async (method, params) => {
+// export const sendReq = async (method, params) => {
 
-    const url="http://localhost:3000/componentes"
+//     const url="http://localhost:3000/componentes"
 
-    await axios({ method: method, url: url, data:params}).then(function(resp){
-        let type = resp.data[0]
-        let msg = resp.data[1]
-        show_alerta(msg,type);
-        if(type==="success"){
-            document.getElementById("btnCerrar").click()
-            getProducts()
-        }
+//     await axios({ method: method, url: url, data:params}).then(function(resp){
+//         let type = resp.data[0]
+//         let msg = resp.data[1]
+//         show_alerta(msg,type);
+//         if(type==="success"){
+//             document.getElementById("btnCerrar").click()
+//             getProducts()
+//         }
         
-    })
+//     })
 
-    .catch(function(error){
-        show_alerta("Error en la solicitud", "error")
-        console.log(error)
-    })
-}
+//     .catch(function(error){
+//         show_alerta("Error en la solicitud", "error")
+//         console.log(error)
+//     })
+// }
+
 
 
 //La intencion de este archivo es que en solo lugar tengamos todas las funciones que vamos a necesitar

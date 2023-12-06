@@ -3,11 +3,10 @@ import axios from "axios"
 import Swal from "sweetalert2"
 import withReactContent from "sweetalert2-react-content"
 import { show_alerta } from '../functions'
-import { sendReq } from '../functions'
 
 const ShowProducts = () => {
 
-    const url="http://localhost:3000/componentes"
+    const url="http://localhost:3000/componentes/"
     const [products, setProducts] = useState([])
     const [ID, setID] = useState("")
     const [NOMBRE, setNOMBRE] = useState("")
@@ -53,8 +52,8 @@ const ShowProducts = () => {
     }
 
     const validate = () => {
-      let params;
-      let method;
+      let parametro;
+      let metodo;
       if (NOMBRE.trim() === "") {
         show_alerta("Escribe el nombre del componente", "warning");
       } else if (DESCRIPCION_CORTA.trim() === "") {
@@ -67,30 +66,36 @@ const ShowProducts = () => {
         show_alerta("Escribe la disponibilidad", "warning");
       } else {
         if (operation === 1) {
-          params = {
+          parametro = {
             NOMBRE: NOMBRE.trim(),
             DESCRIPCION_CORTA: DESCRIPCION_CORTA.trim(),
             PRECIO: PRECIO,
             CATEGORIA: CATEGORIA.trim(),
             STOCK: STOCK,
           };
-          method = "POST";
-        } else {
-          params = {
+          metodo = "POST";
+        } else if (operation === 2) {
+          parametro = {
+            ID:ID,
             NOMBRE: NOMBRE.trim(),
             DESCRIPCION_CORTA: DESCRIPCION_CORTA.trim(),
             PRECIO: PRECIO,
             CATEGORIA: CATEGORIA.trim(),
             STOCK: STOCK,
           };
-          method = "PATCH";
+          metodo = "PATCH";
+          console.log("patch entro")
         }
       }
 
-      sendReq(method, params);
+    sendReq(metodo, parametro);
     };
-    const sendReq = async (method, params) => {
-      await axios({ method: method, url: url, data: params })
+    const sendReq = async (metodo, parametro) => {
+
+        const link = `http://localhost:3000/componentes/${parametro}`;
+        console.log(parametro)
+
+      await axios({ method: metodo, url: link, data: parametro })
         .then(function (resp) {
           let type = resp.data[0];
           let msg = resp.data[1];
@@ -103,11 +108,13 @@ const ShowProducts = () => {
 
         .catch(function (error) {
           show_alerta("Error en la solicitud", "error");
-          console.log(error);
+          console.log(link);
         });
     };
 
-    const deleteProduct = (ID,NOMBRE)=>{
+
+    const deleteProduct = (HOLA,NOMBRE)=>{
+    
         const MySwal = withReactContent(Swal)
         MySwal.fire({
             title: '¿Seguro que quieres elimar el producto '+NOMBRE+'?',
@@ -116,11 +123,15 @@ const ShowProducts = () => {
         }).then((result) =>{
             if(result.isConfirmed){
                 setID(ID);
-                sendReq('DELETE', {ID:ID})
+                sendReq('DELETE', HOLA)
             }else{
                 show_alerta('El producto NO fue eliminado', 'info')}
         })
+
     }
+
+
+    
 
     return (
     <div className='App'>
