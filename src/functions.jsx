@@ -46,3 +46,6 @@ function onFocus(foco){
 
 //La intencion de este archivo es que en solo lugar tengamos todas las funciones que vamos a necesitar
 //y las importemos acorde a nuestras necesidades
+
+
+

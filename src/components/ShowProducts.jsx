@@ -1,4 +1,4 @@
-import React,{useEffect, useState} from 'react'
+import React,{Component, useEffect, useState} from 'react'
 import axios from "axios"
 import Swal from "sweetalert2"
 import withReactContent from "sweetalert2-react-content"
@@ -27,13 +27,13 @@ const ShowProducts = () => {
         setProducts(res.data)
     }
 
-    const openModal = (op, ID, NOMBRE, DESCRIPCION_CORTA, PRECIO, STOCK) =>{
+    const openModal = (op, ID, NOMBRE, DESCRIPCION_CORTA, PRECIO, CATEGORIA, STOCK) =>{
         setID("")
         setNOMBRE("")
         setDESCRIPCION_CORTA("")
         setPRECIO("")
-        setSTOCK("")
         setCATEGORIA("")
+        setSTOCK("")
         setOperation(op);
         if(op === 1){
             setTitle("Registrar Producto");
@@ -73,7 +73,7 @@ const ShowProducts = () => {
             CATEGORIA: CATEGORIA.trim(),
             STOCK: STOCK,
           };
-          metodo = "POST";
+          metodo = 'POST';
         } else if (operation === 2) {
           parametro = {
             ID:ID,
@@ -83,8 +83,7 @@ const ShowProducts = () => {
             CATEGORIA: CATEGORIA.trim(),
             STOCK: STOCK,
           };
-          metodo = "PATCH";
-          console.log("patch entro")
+          metodo = 'PATCH';
         }
       }
 
@@ -92,43 +91,54 @@ const ShowProducts = () => {
     };
     const sendReq = async (metodo, parametro) => {
 
-        const link = `http://localhost:3000/componentes/${parametro}`;
-        console.log(parametro)
-
-      await axios({ method: metodo, url: link, data: parametro })
+        
+        await axios({ method: metodo, url:(operation === 2? `${url}${parametro.ID}` : url), data: parametro })
         .then(function (resp) {
           let type = resp.data[0];
           let msg = resp.data[1];
           show_alerta(msg, type);
-          if (type === "success") {
-            document.getElementById("btnCerrar").click();
-            getProducts();
-          }
+          getProducts();
+          if (type==="success",
+            Swal.fire(
+                'Producto Editado!',
+                `El producto se ha editado con exito`,
+                'success'
+            )
+            ){
+                getProducts()
+            }
         })
 
         .catch(function (error) {
           show_alerta("Error en la solicitud", "error");
-          console.log(link);
+         
         });
     };
 
 
-    const deleteProduct = (HOLA,NOMBRE)=>{
-    
-        const MySwal = withReactContent(Swal)
-        MySwal.fire({
-            title: '¿Seguro que quieres elimar el producto '+NOMBRE+'?',
-            icon: 'question', text:'No se podra dar marcha atras',
-            showCancelButton:true, confirmButtonText:'Si, eliminar', cancelButtonText:'cancelar'
-        }).then((result) =>{
-            if(result.isConfirmed){
-                setID(ID);
-                sendReq('DELETE', HOLA)
-            }else{
-                show_alerta('El producto NO fue eliminado', 'info')}
-        })
 
+
+
+    const deleteProduct = async( producto ) => {
+        const response = await axios.delete(`${url}${producto.ID}`)
+        if (response.status === 200,
+            Swal.fire(
+                'Producto Borrado!',
+                `El producto ${producto.NOMBRE}se ha eliminado`,
+                'success'
+            )
+            ){
+                getProducts()
+            } else {
+            Swal.fire(
+                'Error!',
+                'Hubo un problema al eliminar el porducto',
+                'error'
+            );
+        }
     }
+
+
 
 
     
@@ -172,7 +182,7 @@ const ShowProducts = () => {
                                                 <i class="fa-solid fa-pen-to-square"></i>
                                             </button>
                                             &nbsp;
-                                            <button onClick={()=>deleteProduct(product.ID, product.NOMBRE)} className='btn btn-danger'>
+                                            <button onClick={()=>deleteProduct(product)} className='btn btn-danger'>
                                                 <i className='fa-solid fa-trash'></i>
                                             </button>
                                         </td>
